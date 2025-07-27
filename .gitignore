@@ -1,9 +1,6 @@
 __pycache__/
-*.py[cod]
-*$
-*_*
-.DS_Store
-Thumbs.db
-build/
-dist/
-*.egg-info/
+*.pyc
+.env
+.env.*
+*.db
+*.sqlite3

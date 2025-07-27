@@ -1,9 +1,5 @@
 {
-  "build": {
-    "env": {
-      "PORT": "8000"
-    },
-    "builder": "NIXPACKS"
-  },
-  "start": "python3 pluto_jackal_api.py"
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": { "builder": "NIXPACKS" },
+  "start": "uvicorn pluto_jackal_api:app --host 0.0.0.0 --port $PORT"
 }

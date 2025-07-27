@@ -1,36 +1,53 @@
+import os, uuid, datetime
 from fastapi import FastAPI
+from pydantic import BaseModel
 
-# Initialize the FastAPI app
-app = FastAPI(
-    title="Pluto Jackal API",
-    description="API for Pluto Jackal project",
-    version="1.0.0",
-)
+app = FastAPI(title="PLUTO-JACKAL Orchestrator", version="0.1")
 
-# Root endpoint
+AGENTS = {
+    "chronolog": "ChronoLog (Meta-Auditor)",
+    "forgerunner": "ForgeRunner (IaC Engineer)",
+    "protosmith": "ProtoSmith (Code Generator)",
+    "roleweaver": "RoleWeaver (Org Designer)",
+    "nexusbuilder": "NexusBuilder (App Orchestrator)",
+    "tether": "Tether (API Integrator)",
+    "sentineledge": "SentinelEdge (Security + Monitoring)"
+}
+
+class Task(BaseModel):
+    agent: str
+    objective: str
+    context: dict = {}
+
+TASK_LOG = []
+
 @app.get("/")
-async def root():
-    return {
-        "message": "Welcome to the Pluto Jackal API",
-        "version": "1.0.0",
-        "endpoints": [
-            "/health",
-            "/api/v1/test",
-            "/docs"
-        ]
+def root():
+    return {"message": "PLUTO-JACKAL Core API online.", "agents": AGENTS}
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+
+@app.post("/task")
+def assign_task(task: Task):
+    tid = str(uuid.uuid4())
+    now = datetime.datetime.now().isoformat()
+    entry = {
+        "task_id": tid,
+        "timestamp": now,
+        "agent": task.agent,
+        "objective": task.objective,
+        "context": task.context,
     }
+    TASK_LOG.append(entry)
+    return {"message": f"Task assigned to {AGENTS.get(task.agent, task.agent)}", "task_id": tid}
 
-# Health check endpoint
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy", "service": "pluto-jackal"}
+@app.get("/log")
+def get_log():
+    return {"task_log": TASK_LOG}
 
-# Existing API routes (assuming you have something like this)
-@app.get("/api/v1/test")
-async def test_endpoint():
-    return {"message": "API v1 is working"}
-
-# Docs redirect if needed
-@app.get("/docs")
-async def docs_redirect():
-    return {"message": "Visit /api/v1/docs for API documentation"}
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run("pluto_jackal_api:app", host="0.0.0.0", port=port)
