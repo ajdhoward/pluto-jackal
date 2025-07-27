@@ -1,18 +1,11 @@
-# PLUTO-JACKAL Bootstrap Script
-
-"""
-This FastAPI-based scaffold is the launchpad for PLUTO-JACKAL,
-the core agent architect of AcidWurx. It coordinates AI sub-agents,
-autonomously builds system functions, and handles project automation.
-"""
-
+import os
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 import uuid, datetime
+import uvicorn
 
 app = FastAPI(title="PLUTO-JACKAL Orchestrator", version="0.1")
 
-# -- Agent Registry (In-memory for now) --
 AGENTS = {
     "chronolog": "ChronoLog (Meta-Auditor)",
     "forgerunner": "ForgeRunner (IaC Engineer)",
@@ -23,13 +16,11 @@ AGENTS = {
     "sentineledge": "SentinelEdge (Security + Monitoring)"
 }
 
-# -- Task Schema --
 class Task(BaseModel):
     agent: str
     objective: str
     context: dict = {}
 
-# -- In-memory Log
 TASK_LOG = []
 
 @app.get("/")
@@ -53,3 +44,7 @@ def assign_task(task: Task):
 @app.get("/log")
 def get_log():
     return {"task_log": TASK_LOG}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("pluto_jackal_api:app", host="0.0.0.0", port=port)
