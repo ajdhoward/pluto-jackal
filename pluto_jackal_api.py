@@ -1,50 +1,36 @@
-import os
-from fastapi import FastAPI, Request
-from pydantic import BaseModel
-import uuid, datetime
-import uvicorn
+from fastapi import FastAPI
 
-app = FastAPI(title="PLUTO-JACKAL Orchestrator", version="0.1")
+# Initialize the FastAPI app
+app = FastAPI(
+    title="Pluto Jackal API",
+    description="API for Pluto Jackal project",
+    version="1.0.0",
+)
 
-AGENTS = {
-    "chronolog": "ChronoLog (Meta-Auditor)",
-    "forgerunner": "ForgeRunner (IaC Engineer)",
-    "protosmith": "ProtoSmith (Code Generator)",
-    "roleweaver": "RoleWeaver (Org Designer)",
-    "nexusbuilder": "NexusBuilder (App Orchestrator)",
-    "tether": "Tether (API Integrator)",
-    "sentineledge": "SentinelEdge (Security + Monitoring)"
-}
-
-class Task(BaseModel):
-    agent: str
-    objective: str
-    context: dict = {}
-
-TASK_LOG = []
-
+# Root endpoint
 @app.get("/")
-def read_root():
-    return {"message": "PLUTO-JACKAL Core API online.", "agents": AGENTS}
-
-@app.post("/task")
-def assign_task(task: Task):
-    task_id = str(uuid.uuid4())
-    timestamp = datetime.datetime.now().isoformat()
-    log_entry = {
-        "task_id": task_id,
-        "timestamp": timestamp,
-        "agent": task.agent,
-        "objective": task.objective,
-        "context": task.context,
+async def root():
+    return {
+        "message": "Welcome to the Pluto Jackal API",
+        "version": "1.0.0",
+        "endpoints": [
+            "/health",
+            "/api/v1/test",
+            "/docs"
+        ]
     }
-    TASK_LOG.append(log_entry)
-    return {"message": f"Task assigned to {AGENTS.get(task.agent)}", "task_id": task_id}
 
-@app.get("/log")
-def get_log():
-    return {"task_log": TASK_LOG}
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "pluto-jackal"}
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("pluto_jackal_api:app", host="0.0.0.0", port=port)
+# Existing API routes (assuming you have something like this)
+@app.get("/api/v1/test")
+async def test_endpoint():
+    return {"message": "API v1 is working"}
+
+# Docs redirect if needed
+@app.get("/docs")
+async def docs_redirect():
+    return {"message": "Visit /api/v1/docs for API documentation"}

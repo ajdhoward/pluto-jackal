@@ -1,7 +1,12 @@
-
+version: 2
 services:
-  - type: web
-    name: pluto-jackal
-    env: docker
-    plan: free
-    autoDeploy: true
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    env:
+      - DATABASE_URL
+      - SECRET_KEY
+      - DEBUG_MODE
