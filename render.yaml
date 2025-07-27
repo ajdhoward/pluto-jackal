@@ -1,0 +1,7 @@
+
+services:
+  - type: web
+    name: pluto-jackal
+    env: docker
+    plan: free
+    autoDeploy: true
