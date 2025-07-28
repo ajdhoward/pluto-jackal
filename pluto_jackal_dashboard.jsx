@@ -1,85 +1,116 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Input } from "@/components/ui/input";
 
-const steps = [
+// Quick setup wizard with integrated download buttons, commands, and API validation
+const quickSteps = [
   {
     id: 1,
-    title: "Bootstrap Script Deployment",
-    content: "Generate and deploy the initial PLUTO-JACKAL bootstrap script to the VPS.",
-    mandatory: true,
-    help: "This script sets up the core agent logic. It must be deployed and confirmed before continuing."
+    title: "Run Bootstrap Script",
+    action: (
+      <>
+        <Button asChild>
+          <a href="/downloads/pluto_jackal_bootstrap.sh" download>⬇️ Download Bootstrap Script</a>
+        </Button>
+        <p className="mt-2 text-sm text-muted-foreground">Upload to `/root/` in Cockpit or SCP and run:</p>
+        <pre className="bg-muted p-2 rounded text-sm">bash pluto_jackal_bootstrap.sh</pre>
+      </>
+    ),
+    help: "This script sets up PLUTO-JACKAL's base environment and agent logic."
   },
   {
     id: 2,
-    title: "Codex GitOps Manager",
-    content: "Build Codex GitHub Manager to automate Git pushes and deployment workflows.",
-    mandatory: true,
-    help: "This step enables PLUTO-JACKAL to update its code autonomously."
+    title: "Connect GitHub",
+    action: (
+      <>
+        <Input placeholder="Paste GitHub PAT here" />
+        <Button variant="secondary" className="mt-2">Validate & Link Repo</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">export GITHUB_PAT=your-token</pre>
+      </>
+    ),
+    help: "Links PLUTO-JACKAL to your GitHub repo for autonomous commits and deployments."
   },
   {
     id: 3,
-    title: "Runtime Debugging Harness",
-    content: "Set up an environment for agents to test and debug their own code with safety nets.",
-    mandatory: false,
-    help: "While not required immediately, this ensures generated code is validated before live deployment."
+    title: "Enter AI Model Hub Credentials",
+    action: (
+      <>
+        <Input placeholder="Token ID" id="tokenId" />
+        <Input placeholder="Token Value" id="tokenValue" className="mt-2" />
+        <Button
+          variant="secondary"
+          className="mt-2"
+          onClick={() => {
+            const id = document.getElementById("tokenId").value;
+            const value = document.getElementById("tokenValue").value;
+            if (!id || !value) {
+              alert("Please enter both Token ID and Token Value.");
+              return;
+            }
+            // Simulate API validation using Basic Auth or proper header structure
+            fetch("https://api.ionos.com/ai/v1/status", {
+              headers: { Authorization: `Basic ${btoa(id + ":" + value)}` }
+            })
+              .then((res) => {
+                if (res.ok) {
+                  alert("✅ API Credentials validated successfully!");
+                } else {
+                  alert("❌ Invalid credentials or connection error.");
+                }
+              })
+              .catch(() => alert("❌ Unable to reach AI Model Hub API."));
+          }}
+        >
+          Test AI Hub Connection
+        </Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">export AI_HUB_ID=your-id\nexport AI_HUB_KEY=your-key</pre>
+      </>
+    ),
+    help: "Connects PLUTO-JACKAL to IONOS AI Model Hub SDK for LLM orchestration, validating credentials live."
   },
   {
     id: 4,
-    title: "Litellm Gateway",
-    content: "Deploy a model routing gateway to handle multiple LLMs.",
-    mandatory: false,
-    help: "Provides flexible AI routing to ensure resilience and scalability."
+    title: "Start Autonomous Agent",
+    action: (
+      <>
+        <Button variant="default" className="mt-2">🚀 Launch Coding Agent</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">systemctl start pluto-jackal-agent</pre>
+      </>
+    ),
+    help: "Starts PLUTO-JACKAL’s AI agent to autonomously code, validate, and push updates."
   }
 ];
 
-export default function PlutoJackalDashboard() {
+export default function QuickStartPlutoJackal() {
   const [stepIndex, setStepIndex] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState([]);
+  const [completed, setCompleted] = useState([]);
 
-  const currentStep = steps[stepIndex];
+  const current = quickSteps[stepIndex];
 
-  const handleNext = () => {
-    if (currentStep.mandatory && !completedSteps.includes(currentStep.id)) {
-      alert("You must complete this step before proceeding.");
-      return;
-    }
-    setStepIndex((prev) => Math.min(prev + 1, steps.length - 1));
-  };
-
-  const handlePrev = () => {
-    setStepIndex((prev) => Math.max(prev - 1, 0));
-  };
-
-  const markComplete = () => {
-    if (!completedSteps.includes(currentStep.id)) {
-      setCompletedSteps([...completedSteps, currentStep.id]);
-    }
+  const completeStep = () => {
+    if (!completed.includes(current.id)) setCompleted([...completed, current.id]);
   };
 
   return (
     <div className="p-6 space-y-6">
       <Card>
         <CardContent className="space-y-4">
-          <h2 className="text-xl font-bold">Step {currentStep.id}: {currentStep.title}</h2>
-          <p>{currentStep.content}</p>
-          <Button onClick={markComplete} disabled={completedSteps.includes(currentStep.id)}>
-            {completedSteps.includes(currentStep.id) ? "✅ Completed" : "Mark Step Complete"}
+          <h2 className="text-xl font-bold">Quick Setup – Step {current.id}: {current.title}</h2>
+          <div>{current.action}</div>
+
+          <Button onClick={completeStep}>
+            {completed.includes(current.id) ? "✅ Done" : "Mark Step Done"}
           </Button>
 
-          <Accordion type="single" collapsible>
-            <AccordionItem value="help">
-              <AccordionTrigger>Need Help?</AccordionTrigger>
-              <AccordionContent>
-                {currentStep.help}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <details className="mt-4">
+            <summary className="cursor-pointer font-medium">Need Help?</summary>
+            <p className="mt-2 text-sm text-muted-foreground">{current.help}</p>
+          </details>
 
           <div className="flex justify-between pt-6">
-            <Button onClick={handlePrev} disabled={stepIndex === 0}>Previous</Button>
-            <Button onClick={handleNext} disabled={stepIndex === steps.length - 1}>Next</Button>
+            <Button onClick={() => setStepIndex(Math.max(stepIndex - 1, 0))} disabled={stepIndex === 0}>Previous</Button>
+            <Button onClick={() => setStepIndex(Math.min(stepIndex + 1, quickSteps.length - 1))} disabled={stepIndex === quickSteps.length - 1}>Next</Button>
           </div>
         </CardContent>
       </Card>
