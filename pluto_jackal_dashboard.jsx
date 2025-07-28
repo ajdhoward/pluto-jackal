@@ -3,82 +3,83 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-// Quick setup wizard with integrated download buttons, commands, and API validation
+// Quick setup wizard with Telegram integration
 const quickSteps = [
   {
     id: 1,
-    title: "Run Bootstrap Script",
+    title: "Build Founding AI Team",
     action: (
       <>
-        <Button asChild>
-          <a href="/downloads/pluto_jackal_bootstrap.sh" download>⬇️ Download Bootstrap Script</a>
-        </Button>
-        <p className="mt-2 text-sm text-muted-foreground">Upload to `/root/` in Cockpit or SCP and run:</p>
-        <pre className="bg-muted p-2 rounded text-sm">bash pluto_jackal_bootstrap.sh</pre>
+        <p className="mb-2">Initialize PLUTO-JACKAL's first autonomous agents to form its core development team.</p>
+        <Button variant="default">🚀 Launch Founding Agents</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">pluto-jackal init --agents founding</pre>
       </>
     ),
-    help: "This script sets up PLUTO-JACKAL's base environment and agent logic."
+    help: "This step deploys the initial set of AI agents that will form the foundation for coding, research, and automation."
   },
   {
     id: 2,
-    title: "Connect GitHub",
+    title: "Framework of Resources",
     action: (
       <>
-        <Input placeholder="Paste GitHub PAT here" />
-        <Button variant="secondary" className="mt-2">Validate & Link Repo</Button>
-        <pre className="bg-muted p-2 rounded text-sm mt-2">export GITHUB_PAT=your-token</pre>
+        <p className="mb-2">Provision knowledge bases, tools, and external integrations required for autonomous development.</p>
+        <Button variant="secondary">📚 Setup Resource Framework</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">pluto-jackal resources --init</pre>
       </>
     ),
-    help: "Links PLUTO-JACKAL to your GitHub repo for autonomous commits and deployments."
+    help: "Installs and configures resource APIs, libraries, and SDKs to support ongoing agent tasks."
   },
   {
     id: 3,
-    title: "Enter AI Model Hub Credentials",
+    title: "Project Management Interface",
     action: (
       <>
-        <Input placeholder="Token ID" id="tokenId" />
-        <Input placeholder="Token Value" id="tokenValue" className="mt-2" />
-        <Button
-          variant="secondary"
-          className="mt-2"
-          onClick={() => {
-            const id = document.getElementById("tokenId").value;
-            const value = document.getElementById("tokenValue").value;
-            if (!id || !value) {
-              alert("Please enter both Token ID and Token Value.");
-              return;
-            }
-            // Simulate API validation using Basic Auth or proper header structure
-            fetch("https://api.ionos.com/ai/v1/status", {
-              headers: { Authorization: `Basic ${btoa(id + ":" + value)}` }
-            })
-              .then((res) => {
-                if (res.ok) {
-                  alert("✅ API Credentials validated successfully!");
-                } else {
-                  alert("❌ Invalid credentials or connection error.");
-                }
-              })
-              .catch(() => alert("❌ Unable to reach AI Model Hub API."));
-          }}
-        >
-          Test AI Hub Connection
-        </Button>
-        <pre className="bg-muted p-2 rounded text-sm mt-2">export AI_HUB_ID=your-id\nexport AI_HUB_KEY=your-key</pre>
+        <p className="mb-2">Deploy PLUTO-JACKAL's interface to track and coordinate AI-driven projects.</p>
+        <Button variant="secondary">🗂 Deploy Management UI</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">pluto-jackal ui --deploy projects</pre>
       </>
     ),
-    help: "Connects PLUTO-JACKAL to IONOS AI Model Hub SDK for LLM orchestration, validating credentials live."
+    help: "This provides a centralized dashboard for managing agents, tasks, and deliverables."
   },
   {
     id: 4,
-    title: "Start Autonomous Agent",
+    title: "Begin Core Framework in Frappe",
     action: (
       <>
-        <Button variant="default" className="mt-2">🚀 Launch Coding Agent</Button>
-        <pre className="bg-muted p-2 rounded text-sm mt-2">systemctl start pluto-jackal-agent</pre>
+        <p className="mb-2">Instruct PLUTO-JACKAL to start coding the core framework leveraging Frappe.</p>
+        <Button variant="default">💻 Start Frappe Framework Development</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">pluto-jackal dev --framework frappe</pre>
       </>
     ),
-    help: "Starts PLUTO-JACKAL’s AI agent to autonomously code, validate, and push updates."
+    help: "This step initiates autonomous development of PLUTO-JACKAL's backbone using Frappe."
+  },
+  {
+    id: 5,
+    title: "Integrate Google Services",
+    action: (
+      <>
+        <p className="mb-2">Connect Google APIs (Tasks, Drive, Calendar) for task and resource synchronization.</p>
+        <Input placeholder="Google OAuth Client ID" className="mb-2" />
+        <Input placeholder="Google OAuth Client Secret" className="mb-2" />
+        <Button variant="secondary">🔗 Authenticate Google Services</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">pluto-jackal integrate --google</pre>
+      </>
+    ),
+    help: "Links PLUTO-JACKAL with Google APIs to enable syncing of tasks, files, and schedules for project automation."
+  },
+  {
+    id: 6,
+    title: "Connect Telegram Bot",
+    action: (
+      <>
+        <p className="mb-2">Enable communication with PLUTO-JACKAL via your existing Telegram bot.</p>
+        <Input placeholder="Telegram Bot Token" className="mb-2" defaultValue="YOUR_BOT_TOKEN" />
+        <Input placeholder="Telegram Chat ID" className="mb-2" defaultValue="YOUR_CHAT_ID" />
+        <Button variant="secondary">🤖 Link Telegram Bot</Button>
+        <pre className="bg-muted p-2 rounded text-sm mt-2">pluto-jackal integrate --telegram</pre>
+      </>
+    ),
+    help: "This step connects PLUTO-JACKAL to your Telegram bot for real-time communication and task updates from the offset."
   }
 ];
 
@@ -96,7 +97,7 @@ export default function QuickStartPlutoJackal() {
     <div className="p-6 space-y-6">
       <Card>
         <CardContent className="space-y-4">
-          <h2 className="text-xl font-bold">Quick Setup – Step {current.id}: {current.title}</h2>
+          <h2 className="text-xl font-bold">Priority Setup – Step {current.id}: {current.title}</h2>
           <div>{current.action}</div>
 
           <Button onClick={completeStep}>
