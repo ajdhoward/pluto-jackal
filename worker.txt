@@ -1,0 +1,72 @@
+PowerShell 7.5.2
+PS C:\Temp\Debloat> Unblock-File .\remove_confirmed_bloat.ps1
+PS C:\Temp\Debloat> .\remove_confirmed_bloat.ps1
+🔍 Removing Microsoft.MicrosoftEdge.Stable
+⚠️  Failed to remove Microsoft.MicrosoftEdge.Stable : Class not registered
+
+🔍 Removing Microsoft.Microsoft3DViewer
+⚠️  Failed to remove Microsoft.Microsoft3DViewer : Class not registered
+
+🔍 Removing Microsoft.Office.OneNote
+⚠️  Failed to remove Microsoft.Office.OneNote : Class not registered
+
+🔍 Removing Microsoft.MicrosoftOfficeHub
+⚠️  Failed to remove Microsoft.MicrosoftOfficeHub : Class not registered
+
+🔍 Removing Microsoft.SkypeApp
+⚠️  Failed to remove Microsoft.SkypeApp : Access is denied.
+
+🔍 Removing Microsoft.WindowsStore
+⚠️  Failed to remove Microsoft.WindowsStore : Class not registered
+
+🔍 Removing Microsoft.GetHelp
+⚠️  Failed to remove Microsoft.GetHelp : Access is denied.
+
+🔍 Removing Microsoft.Getstarted
+⚠️  Failed to remove Microsoft.Getstarted : Access is denied.
+
+🔍 Removing Microsoft.XboxGameCallableUI
+⚠️  Failed to remove Microsoft.XboxGameCallableUI : Removal failed. Please contact your software vendor.
+
+🔍 Removing Microsoft.XboxGamingOverlay
+⚠️  Failed to remove Microsoft.XboxGamingOverlay : Class not registered
+
+🔍 Removing Microsoft.XboxIdentityProvider
+⚠️  Failed to remove Microsoft.XboxIdentityProvider : Class not registered
+
+🔍 Removing Microsoft.XboxSpeechToTextOverlay
+⚠️  Failed to remove Microsoft.XboxSpeechToTextOverlay : Class not registered
+
+🔍 Removing Microsoft.Xbox.TCUI
+⚠️  Failed to remove Microsoft.Xbox.TCUI : Class not registered
+
+🔍 Removing Microsoft.XboxApp
+⚠️  Failed to remove Microsoft.XboxApp : Class not registered
+
+🔍 Removing Microsoft.XboxGameOverlay
+⚠️  Failed to remove Microsoft.XboxGameOverlay : Class not registered
+
+🔍 Removing Microsoft.Cortana
+⚠️  Failed to remove Microsoft.Cortana : Class not registered
+
+🔍 Removing MicrosoftTeams
+⚠️  Failed to remove MicrosoftTeams : Access is denied.
+
+🔍 Removing Microsoft.WindowsCamera
+⚠️  Failed to remove Microsoft.WindowsCamera : Access is denied.
+
+🔍 Removing Microsoft.Todos
+⚠️  Failed to remove Microsoft.Todos : Class not registered
+
+🔍 Removing Microsoft.StickyNotes
+⚠️  Failed to remove Microsoft.StickyNotes : Class not registered
+
+🔍 Removing Microsoft.WindowsFeedbackHub
+⚠️  Failed to remove Microsoft.WindowsFeedbackHub : Access is denied.
+
+⚠️ OneDrive removal failed: The term 'C:\WINDOWS\SysWOW64\OneDriveSetup.exe' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+✅ Edge forcibly uninstalled
+
+✅ Bloat removal complete. Reboot is recommended.
+PS C:\Temp\Debloat>

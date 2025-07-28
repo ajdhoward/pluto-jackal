@@ -1,5 +1,7 @@
+# requirements.txt
 fastapi
 uvicorn[standard]
 pydantic
 python-dotenv
-requests
+requests # Needed for worker to call PLUTO API
+# Add others if needed by worker tasks (e.g., gitpython)
