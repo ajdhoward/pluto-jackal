@@ -54,9 +54,7 @@ async def wizard_page(request: Request):
 @router.get("/wizard/state", response_class=HTMLResponse)
 async def wizard_state(request: Request):
     step = current_step()
-    return templates.TemplateResponse(
-        "wizard_state.html", {"request": request, "step": step, "steps": WIZARD_STEPS}
-    )
+    return templates.TemplateResponse("wizard_state.html", {"request": request, "step": step, "steps": WIZARD_STEPS})
 
 
 @router.post("/wizard/mark")

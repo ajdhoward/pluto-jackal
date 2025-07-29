@@ -110,8 +110,10 @@ def poll_and_execute():
                 if done_response.status_code == 200:
                     print(f"[WORKER] Successfully reported completion for task {task_data['id']}")
                 else:
-                    print(f"[WORKER] Failed to report completion for task {task_data['id']}. "
-                          f"Status: {done_response.status_code}, Text: {done_response.text}")
+                    print(
+                        f"[WORKER] Failed to report completion for task {task_data['id']}. "
+                        f"Status: {done_response.status_code}, Text: {done_response.text}"
+                    )
 
             elif response.status_code == 204:
                 print("[WORKER] No tasks available.")

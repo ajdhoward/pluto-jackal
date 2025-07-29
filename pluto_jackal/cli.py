@@ -9,9 +9,7 @@ def cli():
 
 
 @cli.command()
-@click.option(
-    "--agents", default="founding", help="Initialize agents: founding/core/custom"
-)
+@click.option("--agents", default="founding", help="Initialize agents: founding/core/custom")
 def init(agents):
     """Initialize Pluto-Jackal agents."""
     click.echo(f"🚀 Initializing Pluto-Jackal agents: {agents}")
