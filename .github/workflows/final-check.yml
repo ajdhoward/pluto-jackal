@@ -1,0 +1,45 @@
+name: Final Project Health Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 black autopep8 pre-commit
+
+      - name: Run Flake8
+        run: |
+          source venv/bin/activate
+          flake8
+
+      - name: Check code formatting with Black
+        run: |
+          source venv/bin/activate
+          black --check .
+
+      - name: Run Pre-commit Hooks
+        run: |
+          source venv/bin/activate
+          pre-commit run --all-files
