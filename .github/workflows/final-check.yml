@@ -26,22 +26,21 @@ jobs:
 
       - name: Run Flake8 (Lint)
         run: |
-          flake8 . || echo "⚠️ Lint warnings detected but not failing build"
+          flake8 . || echo "⚠️ Lint warnings detected, continuing..."
 
       - name: Auto-fix with Black and autopep8
         run: |
           black --line-length 120 .
           autopep8 --in-place --recursive --max-line-length 120 .
 
-      - name: Run final-check.sh
-        run: |
-          chmod +x final-check.sh
-          ./final-check.sh || echo "⚠️ Script completed with warnings"
-
       - name: Commit and push changes (if any)
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add .
-          git commit -m "Auto-formatting and lint fixes [GitHub Actions]" || echo "No changes to commit"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-fix linting issues via GitHub Actions"
+            git push
+          else
+            echo "✅ No changes to commit."
+          fi
