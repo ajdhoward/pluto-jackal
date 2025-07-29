@@ -8,19 +8,36 @@ router = APIRouter(tags=["wizard"])
 
 # Dumb static steps for MVP; replace with GuideBuilder later
 WIZARD_STEPS = [
-    {"n":1,"what":"Revoke leaked PATs",
-     "how":"Open https://github.com/settings/personal-access-tokens and click Revoke.",
-     "check":"Token gone from list.","status":"pending"},
-    {"n":2,"what":"Create GitHub App",
-     "how":"Go to https://github.com/settings/apps/new and fill fields as per instructions.",
-     "check":"App ID visible, PEM downloaded.","status":"pending"},
-    {"n":3,"what":"Add env vars to Railway",
-     "how":"Railway → Variables → add GITHUB_APP_ID, etc.","check":"Webhook ping returns 200.",
-     "status":"pending"},
-    {"n":4,"what":"Start worker on VPS",
-     "how":"ssh root@VPS → cd /opt/acidwurx/pluto-jackal/vps → docker compose up -d",
-     "check":"docker logs show worker polling.","status":"pending"},
+    {
+        "n": 1,
+        "what": "Revoke leaked PATs",
+        "how": "Open https://github.com/settings/personal-access-tokens and click Revoke.",
+        "check": "Token gone from list.",
+        "status": "pending",
+    },
+    {
+        "n": 2,
+        "what": "Create GitHub App",
+        "how": "Go to https://github.com/settings/apps/new and fill fields as per instructions.",
+        "check": "App ID visible, PEM downloaded.",
+        "status": "pending",
+    },
+    {
+        "n": 3,
+        "what": "Add env vars to Railway",
+        "how": "Railway → Variables → add GITHUB_APP_ID, etc.",
+        "check": "Webhook ping returns 200.",
+        "status": "pending",
+    },
+    {
+        "n": 4,
+        "what": "Start worker on VPS",
+        "how": "ssh root@VPS → cd /opt/acidwurx/pluto-jackal/vps → docker compose up -d",
+        "check": "docker logs show worker polling.",
+        "status": "pending",
+    },
 ]
+
 
 def current_step():
     for s in WIZARD_STEPS:
@@ -28,15 +45,19 @@ def current_step():
             return s
     return None
 
+
 @router.get("/wizard", response_class=HTMLResponse)
 async def wizard_page(request: Request):
     return templates.TemplateResponse("wizard.html", {"request": request})
 
+
 @router.get("/wizard/state", response_class=HTMLResponse)
 async def wizard_state(request: Request):
     step = current_step()
-    return templates.TemplateResponse("wizard_state.html",
-                                      {"request": request, "step": step, "steps": WIZARD_STEPS})
+    return templates.TemplateResponse(
+        "wizard_state.html", {"request": request, "step": step, "steps": WIZARD_STEPS}
+    )
+
 
 @router.post("/wizard/mark")
 async def wizard_mark(n: int = Form(...), result: str = Form(...)):
