@@ -93,8 +93,6 @@ def healthz():
 
 
 # Existing endpoint to log a task (adds to queue)
-
-
 @app.post("/task")
 def assign_task(task: Task):
     task_id = str(uuid.uuid4())
@@ -114,10 +112,7 @@ def assign_task(task: Task):
     conn.close()
 
     return {
-        "message": f"Task assigned to {
-            AGENTS.get(
-                task.agent,
-                task.agent)}",
+        "message": f"Task assigned to {AGENTS.get(task.agent, task.agent)}",
         "task_id": task_id,
     }
 
@@ -136,7 +131,6 @@ def dequeue():
     """Get the next pending task and mark it as in_progress."""
     conn = sqlite3.connect(DATABASE_FILE)
     cursor = conn.cursor()
-    # Use a transaction to ensure atomicity
     cursor.execute("BEGIN IMMEDIATE")
     cursor.execute(
         """
@@ -149,7 +143,6 @@ def dequeue():
     )
     row = cursor.fetchone()
     if row:
-        # Mark task as in_progress
         task_id = row[0]
         now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         cursor.execute(
@@ -163,7 +156,6 @@ def dequeue():
         conn.commit()
         conn.close()
 
-        # Deserialize context
         context_dict = json.loads(row[3]) if row[3] else {}
         result_dict = json.loads(row[5]) if row[5] else None
 
@@ -177,7 +169,7 @@ def dequeue():
             created_at=row[6],
             updated_at=now,
         )
-        return queue_item.dict()  # Return as dict for JSON serialization
+        return queue_item.dict()
     else:
         conn.close()
         raise HTTPException(status_code=204, detail="No pending tasks")
@@ -194,7 +186,7 @@ def mark_done(task_id: str, task_result: TaskResult):
         conn.close()
         raise HTTPException(status_code=404, detail="Task not found")
 
-    result_json = json.dumps(task_result.result)  # Serialize result
+    result_json = json.dumps(task_result.result)
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
     cursor.execute(
         """
@@ -209,9 +201,6 @@ def mark_done(task_id: str, task_result: TaskResult):
     return {"ok": True, "message": f"Task {task_id} marked as done."}
 
 
-# Optional: Get task log/status
-
-
 @app.get("/log")
 def get_log():
     conn = sqlite3.connect(DATABASE_FILE)
@@ -221,7 +210,7 @@ def get_log():
         SELECT id, agent, objective, context, status, result, created_at, updated_at
         FROM tasks
         ORDER BY created_at DESC
-        LIMIT 100 -- Limit for performance
+        LIMIT 100
     """
     )
     rows = cursor.fetchall()
@@ -246,12 +235,9 @@ def get_log():
     return {"task_log": log_entries}
 
 
-# --- Main Execution ---
 if __name__ == "__main__":
     import uvicorn
 
     port = int(os.environ.get("PORT", "8000"))
     print(f"Starting PLUTO-JACKAL API on port {port}...")
-    uvicorn.run(
-        "pluto_jackal_api:app", host="0.0.0.0", port=port, reload=False
-    )  # Disable reload for production
+    uvicorn.run("pluto_jackal_api:app", host="0.0.0.0", port=port, reload=False)
